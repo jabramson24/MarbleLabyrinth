@@ -186,10 +186,19 @@ function onMouseMove(event) {
   world.gravity.set(gravityX, gravityY, world.gravity.z);
 }
 
+function doOnTick() {
+  if (sphereBody.position.z < -10) {
+    sphereBody.position.set(spawnX, spawnY, spawnZ);
+    sphereBody.velocity.z = 0;
+    sphereBody.__dirtyPosition = true;
+  }
+}
+
 function animate() {
   requestAnimationFrame(animate);
   if (boardLoaded) {
     // controls.update()
+    doOnTick();
     world.step(Math.min(clock.getDelta(), 0.1));
     updateMesh(sphereMesh, sphereBody);
     updateMesh(boardMesh, boardBody);
