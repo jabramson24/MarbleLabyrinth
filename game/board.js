@@ -61,7 +61,15 @@ export class Board {
 
   update() {
     if (this.boardLoaded) {
-      this.boardBody.quaternion.copy(this.targetRotation);
+      let xDiff = this.targetRotation.x - this.boardBody.quaternion.x;
+      let yDiff = this.targetRotation.y - this.boardBody.quaternion.y;
+      let tempQuat = new THREE.Quaternion(
+        this.boardBody.quaternion.x + xDiff / 100,
+        this.boardBody.quaternion.y + yDiff / 100,
+        0,
+        1
+      ).normalize();
+      this.boardBody.quaternion.copy(tempQuat);
       this.boardMesh.position.copy(this.boardBody.position);
       this.boardMesh.quaternion.copy(this.boardBody.quaternion);
     }
@@ -72,7 +80,6 @@ export class Board {
     dy = clamp(dy, -0.2, 0.2);
     if (this.boardLoaded) {
       this.targetRotation = new THREE.Quaternion(-dy, dx, 0, 1).normalize();
-      console.log(this.targetRotation);
     }
   }
 }

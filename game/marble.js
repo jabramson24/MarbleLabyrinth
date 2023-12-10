@@ -3,7 +3,7 @@ import * as CANNON from "cannon-es";
 
 const spawnX = -1;
 const spawnY = 65;
-const spawnZ = 20;
+const spawnZ = 40;
 const size = 3.5;
 
 export class Sphere {
