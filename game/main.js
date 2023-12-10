@@ -11,6 +11,7 @@ class Game {
   constructor() {
     this.gravityStrength = 200.0;
     this.numSteps = 10;
+    this.modifyShadows = false;
 
     // Scene
     this.scene = new THREE.Scene();
@@ -90,6 +91,9 @@ class Game {
     const gravityX = dx * this.gravityStrength;
     const gravityY = dy * this.gravityStrength;
     this.rotateCamera(dx, dy);
+    if (this.modifyShadows) {
+      this.lights.rotateLights(dx, dy);
+    }
     this.world.gravity.set(gravityX, gravityY, this.world.gravity.z);
   }
 
@@ -108,12 +112,6 @@ class Game {
     this.world.step(Math.min(this.clock.getDelta(), 0.1));
     this.board.update();
     this.sphere.update();
-    // let timeDiff = this.clock.getDelta();
-    // for (let i = 0; i < this.numSteps; i++) {
-    //   this.world.step(Math.min(timeDiff / this.numSteps, 0.1));
-    //   this.board.update(this.sphere);
-    //   this.sphere.update();
-    // }
     this.renderer.render(this.scene, this.camera);
     this.stats.update();
   }

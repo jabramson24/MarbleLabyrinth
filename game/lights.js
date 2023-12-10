@@ -1,31 +1,45 @@
 import * as THREE from "three";
 
 export class Lights {
-    constructor(scene) {
-        this.scene = scene;
-        this.setupLights();
-    }
+  constructor(scene) {
+    this.scene = scene;
+    this.light1Pos = new THREE.Vector3(140, 0, 100);
+    this.light2Pos = new THREE.Vector3(-140, 0, 100);
+    this.light3Pos = new THREE.Vector3(0, 140, 100);
+    this.light4Pos = new THREE.Vector3(0, -140, 100);
+    this.setupLights();
+  }
 
-    setupLights() {
-        const light1 = new THREE.SpotLight(0x9a9a9a);
-        light1.intensity = 0.8;
-        light1.position.set(140, 0, 100);
-        light1.angle = Math.PI / 4;
-        light1.penumbra = 1.0;
-        light1.shadow.camera.near = 0.1;
-        light1.shadow.camera.far = 300;
-        light1.castShadow = true;
-        this.scene.add(light1);
+  setupLights() {
+    this.light1 = new THREE.SpotLight(0x9a9a9a);
+    this.light1.intensity = 0.8;
+    this.light1.position.copy(this.light1Pos);
+    this.light1.angle = Math.PI / 4;
+    this.light1.penumbra = 1.0;
+    this.light1.shadow.camera.near = 0.1;
+    this.light1.shadow.camera.far = 300;
+    this.light1.castShadow = true;
+    this.scene.add(this.light1);
 
-        const light2 = light1.clone();
-        const light3 = light1.clone();
-        const light4 = light1.clone();
-        light2.position.x = -140;
-        light3.position.set(0, 140, 100);
-        light4.position.set(0, -140, 100);
+    this.light2 = this.light1.clone();
+    this.light3 = this.light1.clone();
+    this.light4 = this.light1.clone();
+    this.light2.position.copy(this.light2Pos);
+    this.light3.position.copy(this.light3Pos);
+    this.light4.position.copy(this.light4Pos);
 
-        this.scene.add(light2);
-        this.scene.add(light3);
-        this.scene.add(light4);
-    }
+    this.scene.add(this.light2);
+    this.scene.add(this.light3);
+    this.scene.add(this.light4);
+  }
+
+  rotateLights(dx, dy) {
+    let radius = 20;
+    let displacement = new THREE.Vector3(-radius * dx, -radius * dy, 0);
+    this.light1.position.copy(this.light1Pos.clone().add(displacement));
+    this.light2.position.copy(this.light2Pos.clone().add(displacement));
+    this.light3.position.copy(this.light3Pos.clone().add(displacement));
+    this.light4.position.copy(this.light4Pos.clone().add(displacement));
+    console.log(this.light1Pos);
+  }
 }

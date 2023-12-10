@@ -57,7 +57,7 @@ export class Board {
     this.world.addBody(this.boardBody);
   }
 
-  update(sphere) {
+  update() {
     if (this.boardLoaded) {
       this.boardMesh.position.copy(this.boardBody.position);
       this.boardMesh.quaternion.copy(this.boardBody.quaternion);
