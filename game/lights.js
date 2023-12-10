@@ -12,13 +12,17 @@ export class Lights {
 
   setupLights() {
     this.light1 = new THREE.SpotLight(0x9a9a9a);
-    this.light1.intensity = 0.8;
+    this.light1.castShadow = true;
+    this.light1.intensity = 1;
     this.light1.position.copy(this.light1Pos);
     this.light1.angle = Math.PI / 4;
     this.light1.penumbra = 1.0;
     this.light1.shadow.camera.near = 0.1;
     this.light1.shadow.camera.far = 300;
-    this.light1.castShadow = true;
+    this.light1.shadow.mapSize.width = 2048;
+    this.light1.shadow.mapSize.height = 2048;
+    this.light1.shadow.radius = 4;
+    this.light1.shadow.blurSamples = 25;
     this.scene.add(this.light1);
 
     this.light2 = this.light1.clone();
@@ -34,7 +38,7 @@ export class Lights {
   }
 
   rotateLights(dx, dy) {
-    let radius = 20;
+    let radius = 125;
     let displacement = new THREE.Vector3(-radius * dx, -radius * dy, 0);
     this.light1.position.copy(this.light1Pos.clone().add(displacement));
     this.light2.position.copy(this.light2Pos.clone().add(displacement));

@@ -11,7 +11,7 @@ class Game {
   constructor() {
     this.gravityStrength = 200.0;
     this.numSteps = 10;
-    this.modifyShadows = false;
+    this.modifyShadows = true;
 
     // Scene
     this.scene = new THREE.Scene();
@@ -26,7 +26,10 @@ class Game {
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
     this.renderer.setSize(window.innerWidth, window.innerHeight);
     this.renderer.shadowMap.enabled = true;
-    this.renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+    // this.renderer.shadowMap.autoUpdate = true;
+    this.renderer.shadowMap.width = 4096;
+    this.renderer.shadowMap.height = 20;
+    this.renderer.shadowMap.type = THREE.PCFShadowMap;
 
     // Physics World
     this.world = new CANNON.World();
@@ -50,7 +53,8 @@ class Game {
     this.board = new Board(
       this.scene,
       this.world,
-      "../game/assets/wood_texture.jpeg"
+      "../game/assets/wood_texture.jpeg",
+      "../game/assets/wood-normal.jpg"
     );
     this.sphere = new Sphere(
       this.scene,

@@ -3,7 +3,7 @@ import * as CANNON from "cannon-es";
 
 const spawnX = -1;
 const spawnY = 65;
-const spawnZ = 20;
+const spawnZ = 40;
 const size = 3.5;
 
 export class Sphere {
@@ -22,8 +22,10 @@ export class Sphere {
       this.addTexture(normal, texture, use_tx)
     );
     this.mesh.position.set(spawnX, spawnY, spawnZ);
-    this.mesh.castShadow = true;
-    this.mesh.receiveShadow = true;
+    if (use_tx) {
+      this.mesh.castShadow = true;
+      this.mesh.receiveShadow = true;
+    }
     this.mesh.scale.set(size, size, size);
     scene.add(this.mesh);
 
@@ -39,7 +41,7 @@ export class Sphere {
     this.mesh.position.copy(this.body.position);
     this.mesh.quaternion.copy(this.body.quaternion);
     if (!this.use_tx) {
-      pointLight.position.copy(sphereMesh.position);
+      this.pointLight.position.copy(this.mesh.position);
     }
     this.doOnTick();
   }
@@ -53,15 +55,16 @@ export class Sphere {
       this.sphereMaterial = new THREE.MeshStandardMaterial({
         map: metalTexture,
         normalMap: metalNormal,
-        normalScale: new THREE.Vector2(1, 1),
-        roughness: 0.3,
-        metalness: 1.0,
+        normalScale: new THREE.Vector2(3, 3),
+        roughness: 0.4,
+        metalness: 0.8,
       });
       return this.sphereMaterial;
     } else {
       this.sphereMaterial = new THREE.MeshPhongMaterial({
         color: 0xff0000,
-        emissive: 0xff0000,
+        emissive: 0xffffff,
+        emissiveIntensity: 20,
       });
     }
   }
@@ -75,7 +78,7 @@ export class Sphere {
   }
 
   doOnTick() {
-    if (this.body.position.z < -10) {
+    if (this.body.position.z < -100) {
       this.resetPosition();
     }
   }

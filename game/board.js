@@ -5,10 +5,11 @@ import CannonUtils from "CannonUtils";
 import { clamp } from "three/src/math/MathUtils";
 
 export class Board {
-  constructor(scene, world, texture) {
+  constructor(scene, world, texturePath, normalPath) {
     this.scene = scene;
     this.world = world;
-    this.texture = texture;
+    this.texturePath = texturePath;
+    this.normalPath = normalPath;
     this.textureLoader = new THREE.TextureLoader();
     this.boardMesh = null;
     this.boardBody = null;
@@ -37,13 +38,24 @@ export class Board {
   }
 
   setupBoardTexture() {
-    const woodTexture = this.textureLoader.load(this.texture);
+    const woodTexture = this.textureLoader.load(this.texturePath);
+    const woodNormal = this.textureLoader.load(this.normalPath);
     woodTexture.wrapS = THREE.RepeatWrapping;
     woodTexture.wrapT = THREE.RepeatWrapping;
-    woodTexture.repeat.set(0.0625, 0.0625);
+    woodTexture.repeat.set(0.06, 0.06);
     woodTexture.offset.set(0.5, 0.5);
+    woodNormal.wrapS = THREE.RepeatWrapping;
+    woodNormal.wrapT = THREE.RepeatWrapping;
+    woodNormal.repeat.set(1, 1);
+    woodNormal.offset.set(0, 0);
 
-    const woodMaterial = new THREE.MeshStandardMaterial({ map: woodTexture });
+    const woodMaterial = new THREE.MeshStandardMaterial({
+      map: woodTexture,
+      normalMap: woodNormal,
+      normalScale: new THREE.Vector2(0.15, 0.15),
+      roughness: 0.7,
+      metalness: 0.3,
+    });
     this.boardMesh.material = woodMaterial;
     this.boardMesh.castShadow = true;
     this.boardMesh.receiveShadow = true;
