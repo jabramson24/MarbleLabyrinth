@@ -8,17 +8,19 @@ const size = 3.5;
 
 export class Sphere {
   constructor(scene, world, normal, texture, use_tx = false) {
-
     // Texture
     this.use_tx = use_tx;
-    if(!use_tx){
+    if (!use_tx) {
       this.pointLight = new THREE.PointLight(texture, 1, 30);
       this.pointLight.position.set(spawnX, spawnX, spawnX);
       scene.add(this.pointLight);
     }
     // Sphere Geometry
     const sphereGeometry = new THREE.SphereGeometry();
-    this.mesh = new THREE.Mesh(sphereGeometry, this.addTexture(normal, texture, use_tx));
+    this.mesh = new THREE.Mesh(
+      sphereGeometry,
+      this.addTexture(normal, texture, use_tx)
+    );
     this.mesh.position.set(spawnX, spawnY, spawnZ);
     this.mesh.castShadow = true;
     this.mesh.receiveShadow = true;
@@ -36,13 +38,14 @@ export class Sphere {
   update() {
     this.mesh.position.copy(this.body.position);
     this.mesh.quaternion.copy(this.body.quaternion);
-    if(!this.use_tx){pointLight.position.copy(sphereMesh.position)};
+    if (!this.use_tx) {
+      pointLight.position.copy(sphereMesh.position);
+    }
     this.doOnTick();
   }
 
   addTexture(normal, texture, use_tx) {
-
-    if(use_tx){
+    if (use_tx) {
       // Sphere Material
       const textureLoader = new THREE.TextureLoader();
       const metalNormal = textureLoader.load(normal);
@@ -52,7 +55,7 @@ export class Sphere {
         normalMap: metalNormal,
         normalScale: new THREE.Vector2(1, 1),
         roughness: 0.3,
-        metalness: 1.0
+        metalness: 1.0,
       });
       return this.sphereMaterial;
     } else {
@@ -72,7 +75,7 @@ export class Sphere {
   }
 
   doOnTick() {
-    if (this.body.position.z < -10) {
+    if (this.body.position.z < -100) {
       this.resetPosition();
     }
   }
