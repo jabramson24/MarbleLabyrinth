@@ -13,7 +13,6 @@ export class Board {
     this.boardMesh = null;
     this.boardBody = null;
     this.boardLoaded = false;
-    this.targetRotation = null;
     this.loadBoard();
   }
 
@@ -56,30 +55,12 @@ export class Board {
     this.boardBody.addShape(boardShape);
     this.boardBody.position.copy(this.boardMesh.position);
     this.world.addBody(this.boardBody);
-    this.targetRotation = this.boardBody.quaternion.clone();
   }
 
-  update() {
+  update(sphere) {
     if (this.boardLoaded) {
-      let xDiff = this.targetRotation.x - this.boardBody.quaternion.x;
-      let yDiff = this.targetRotation.y - this.boardBody.quaternion.y;
-      let tempQuat = new THREE.Quaternion(
-        this.boardBody.quaternion.x + xDiff / 100,
-        this.boardBody.quaternion.y + yDiff / 100,
-        0,
-        1
-      ).normalize();
-      this.boardBody.quaternion.copy(tempQuat);
       this.boardMesh.position.copy(this.boardBody.position);
       this.boardMesh.quaternion.copy(this.boardBody.quaternion);
-    }
-  }
-
-  rotate(dx, dy) {
-    dx = clamp(dx, -0.2, 0.2);
-    dy = clamp(dy, -0.2, 0.2);
-    if (this.boardLoaded) {
-      this.targetRotation = new THREE.Quaternion(-dy, dx, 0, 1).normalize();
     }
   }
 }

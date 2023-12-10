@@ -5,11 +5,12 @@ import * as CANNON from "cannon-es";
 import { Sphere } from "../game/marble.js";
 import { Board } from "../game/board.js";
 import { Lights } from "../game/lights.js";
+import { clamp } from "three/src/math/MathUtils";
 
 class Game {
   constructor() {
-    this.gravityStrength = 1600.0;
-    this.numSteps = 15;
+    this.gravityStrength = 200.0;
+    this.numSteps = 10;
 
     // Scene
     this.scene = new THREE.Scene();
@@ -28,8 +29,8 @@ class Game {
 
     // Physics World
     this.world = new CANNON.World();
-    this.world.solver.iterations = 60;
-    this.world.gravity.set(0, 0, -200);
+    // this.world.solver.iterations = 60;
+    this.world.gravity.set(0, 0, -this.gravityStrength * 1.5);
 
     // Stats
     this.stats = Stats();
@@ -67,6 +68,11 @@ class Game {
       (event) => this.onMouseMove(event),
       false
     );
+    this.renderer.domElement.addEventListener(
+      "mousedown",
+      (event) => this.onMouseMove(event),
+      false
+    );
   }
 
   onWindowResize() {
@@ -77,28 +83,37 @@ class Game {
 
   onMouseMove(event) {
     if (!event.buttons) return;
-    const gravityX =
-      (event.clientX / window.innerWidth - 0.5) * this.gravityStrength;
-    const gravityY =
-      -(event.clientY / window.innerHeight - 0.5) * this.gravityStrength;
-    this.world.gravity.set(0, 0, -260);
-    this.board.rotate(
-      event.clientX / window.innerWidth - 0.5,
-      -(event.clientY / window.innerHeight - 0.5)
+    let dx = event.clientX / window.innerWidth - 0.5;
+    let dy = -(event.clientY / window.innerHeight - 0.5);
+    dx = clamp(dx, -0.4, 0.4);
+    dy = clamp(dy, -0.4, 0.4);
+    const gravityX = dx * this.gravityStrength;
+    const gravityY = dy * this.gravityStrength;
+    this.rotateCamera(dx, dy);
+    this.world.gravity.set(gravityX, gravityY, this.world.gravity.z);
+  }
+
+  rotateCamera(dx, dy) {
+    let radius = 40;
+    this.camera.position.set(
+      -radius * dx,
+      -radius * dy,
+      this.camera.position.z
     );
+    this.camera.lookAt(0, 0, 0);
   }
 
   animate() {
     requestAnimationFrame(() => this.animate());
-    // this.world.step(Math.min(this.clock.getDelta(), 0.1));
-    // this.board.update();
-    // this.sphere.update();
-    let timeDiff = this.clock.getDelta();
-    for (let i = 0; i < this.numSteps; i++) {
-      this.board.update();
-      this.sphere.update();
-      this.world.step(Math.min(timeDiff / this.numSteps, 0.1));
-    }
+    this.world.step(Math.min(this.clock.getDelta(), 0.1));
+    this.board.update();
+    this.sphere.update();
+    // let timeDiff = this.clock.getDelta();
+    // for (let i = 0; i < this.numSteps; i++) {
+    //   this.world.step(Math.min(timeDiff / this.numSteps, 0.1));
+    //   this.board.update(this.sphere);
+    //   this.sphere.update();
+    // }
     this.renderer.render(this.scene, this.camera);
     this.stats.update();
   }
