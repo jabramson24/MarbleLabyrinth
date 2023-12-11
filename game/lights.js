@@ -44,6 +44,5 @@ export class Lights {
     this.light2.position.copy(this.light2Pos.clone().add(displacement));
     this.light3.position.copy(this.light3Pos.clone().add(displacement));
     this.light4.position.copy(this.light4Pos.clone().add(displacement));
-    console.log(this.light1Pos);
   }
 }

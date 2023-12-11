@@ -3,7 +3,7 @@ import * as CANNON from "cannon-es";
 
 const spawnX = -1;
 const spawnY = 65;
-const spawnZ = 40;
+const spawnZ = 10;
 const size = 3.5;
 
 export class Sphere {
@@ -62,10 +62,11 @@ export class Sphere {
       return this.sphereMaterial;
     } else {
       this.sphereMaterial = new THREE.MeshPhongMaterial({
-        color: 0xff0000,
-        emissive: 0xffffff,
-        emissiveIntensity: 20,
+        color: normal,
+        emissive: normal,
+        emissiveIntensity: 20
       });
+      return this.sphereMaterial;
     }
   }
 

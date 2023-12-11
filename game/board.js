@@ -2,17 +2,19 @@ import * as THREE from "three";
 import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import * as CANNON from "cannon-es";
 import CannonUtils from "CannonUtils";
-import { clamp } from "three/src/math/MathUtils";
+
 
 export class Board {
-  constructor(scene, world, texturePath, normalPath) {
+  constructor(scene, world, board, texturePath, normalPath) {
     this.scene = scene;
     this.world = world;
+    this.board = board;
     this.texturePath = texturePath;
     this.normalPath = normalPath;
     this.textureLoader = new THREE.TextureLoader();
     this.boardMesh = null;
     this.boardBody = null;
+    this.woodMaterial = null;
     this.boardLoaded = false;
     this.loadBoard();
   }
@@ -20,7 +22,7 @@ export class Board {
   loadBoard() {
     const objLoader = new OBJLoader();
     objLoader.load(
-      "../game/assets/models/MarbleLabyrinth.obj",
+      this.board,
       (object) => {
         this.scene.add(object);
         this.boardMesh = object.children[0];
