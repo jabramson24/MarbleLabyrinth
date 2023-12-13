@@ -7,10 +7,6 @@ import { Lights } from "../game/lights.js";
 import { Menu } from "../game/menu.js";
 import { clamp } from "three/src/math/MathUtils";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
-import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
-import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
-import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
-// import { transformWithEsbuild } from "vite";
 
 class Game {
   constructor() {
@@ -23,11 +19,8 @@ class Game {
     this.sphere = null;
     this.sphereRadiusMenu = 8;
     this.sphereRadiusGame = 3.5;
-    this.targetX = 0;
-    this.targetY = 0;
     this.darkMode = false;
-    // this.targetZ = 0;
-    // this.targetLookAt = new Vector3()
+
     // Scene
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.AxesHelper(5));
@@ -35,6 +28,8 @@ class Game {
     // Camera
     this.aspectRatio = window.innerWidth / window.innerHeight;
     this.camera = new THREE.PerspectiveCamera(75, this.aspectRatio, 0.1, 840);
+    this.targetX = 0;
+    this.targetY = 0;
 
     // Renderer
     this.renderPass = new RenderPass(this.scene, this.camera);
@@ -44,23 +39,6 @@ class Game {
     this.renderer.shadowMap.width = 4096;
     this.renderer.shadowMap.height = 20;
     this.renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    // // Bloom layer
-    // this.BLOOM_LAYER = new THREE.Layers();
-    // this.BLOOM_LAYER.set(1);
-
-    // // Composer
-    // this.composer = new EffectComposer(this.renderer);
-
-    // this.bloomPass = new UnrealBloomPass(
-    //   new THREE.Vector2(window.innerWidth, window.innerHeight),
-    //   1.6,      // Intensity
-    //   0.1,      // Radius
-    //   0.1       // Pixel density
-    // );
-    // this.composer.renderToScreen = false;
-    // this.composer.addPass(this.renderPass);
-    // this.composer.addPass(this.bloomPass);
 
     // Physics World
     this.world = new CANNON.World();
@@ -77,24 +55,6 @@ class Game {
     document.body.appendChild(this.renderer.domElement);
     document.body.appendChild(this.stats.dom);
     this.addGlowingObjects();
-
-    // Final Composer
-
-    // this.finalComposer = new EffectComposer(this.renderer);
-    // this.finalComposer.addPass(this.renderPass);
-    // const finalPass = new ShaderPass(
-    //   new THREE.ShaderMaterial({
-    //     uniforms: {
-    //       baseTexture: { value: null },
-    //       bloomTexture: { value: this.composer.renderTarget2.texture }
-    //     },
-    //     vertexShader: document.getElementById('vertexshader').textContent,
-    //     fragmentShader: document.getElementById('fragmentshader').textContent,
-    //     defines: {}
-    //   }), "baseTexture"
-    // );
-    // finalPass.needsSwap = true;
-    // this.finalComposer.addPass(finalPass);
   }
 
   transition(menu) {

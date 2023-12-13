@@ -3,8 +3,7 @@ import * as CANNON from "cannon-es";
 
 let spawnX = -1;
 let spawnY = 65;
-let spawnZ = 10;
-let size = 3.5;
+let spawnZ = 2;
 
 export class Sphere {
   constructor(scene, world, normal, texture, radius, use_tx = false, spawnPos) {
