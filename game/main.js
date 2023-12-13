@@ -55,6 +55,20 @@ class Game {
     document.body.appendChild(this.renderer.domElement);
     document.body.appendChild(this.stats.dom);
     this.addGlowingObjects();
+
+    // Sounds
+    const listener = new THREE.AudioListener();
+    camera.add(listener);
+    this.sound = new THREE.Audio(listener);
+    this.isPlaying = false;
+
+    const audioLoader = new THREE.AudioLoader();
+    audioLoader.load("sounds/ambient.ogg", function (buffer) {
+      this.sound.setBuffer(buffer);
+      this.sound.setLoop(true);
+      this.sound.setVolume(0.5);
+      this.sound.play();
+    });
   }
 
   transition(menu) {
@@ -99,6 +113,7 @@ class Game {
     }
 
     this.sphere.resetPosition();
+    this.sound.stop();
   }
 
   generateVibrantColor() {
@@ -255,7 +270,7 @@ class Game {
     );
   }
 
-  generateCoins(){
+  generateCoins() {
     for (let i = 0; i < 2; i++) {
       const coin = new THREE.OctahedronGeometry(10, 0);
       const color = this.generateVibrantColor();
