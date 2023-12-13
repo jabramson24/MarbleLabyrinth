@@ -11,7 +11,7 @@ export class Menu {
     this.camera = camera;
     this.board = "../game/assets/models/box.obj";
     this.texturePath = "../game/assets/glass.png";
-    this.normalPath = "../game/assets/glass-normal.jpg";
+    this.normalPath = "../game/assets/glass-normal2.jpg";
     this.textureLoader = new THREE.TextureLoader();
     this.boardObject = null;
     this.textObject = null;
@@ -24,10 +24,16 @@ export class Menu {
     this.camera.rotation.x += Math.PI / 3;
 
     // Menu light
-    this.light = new THREE.PointLight(0xffffff, 1, 200);
+    this.light = new THREE.DirectionalLight(0xffffff, 2);
     this.light.position.set(0, -100, 250);
     this.light.castShadow = true;
     this.scene.add(this.light);
+
+    // Menu light
+    // this.light = new THREE.DirectionalLight(0xffffff, 1);
+    // this.light.position.set(0, -100, 250);
+    // this.light.castShadow = false;
+    // this.scene.add(this.light);
 
     // Text Light
     this.textLight = new THREE.DirectionalLight(0xffffff, 1);
@@ -105,7 +111,7 @@ export class Menu {
     this.woodMaterial = new THREE.MeshPhysicalMaterial({
       map: woodTexture,
       normalMap: woodNormal,
-      normalScale: new THREE.Vector2(0.2, 0.2),
+      normalScale: new THREE.Vector2(2, 2),
       roughness: 0.4,
       metalness: 0.4,
       transmission: 0.9,
