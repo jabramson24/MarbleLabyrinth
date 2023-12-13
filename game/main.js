@@ -23,9 +23,12 @@ class Game {
     this.sphere = null;
     this.sphereRadiusMenu = 8;
     this.sphereRadiusGame = 3.5;
-
+    this.targetX = 0;
+    this.targetY = 0;
+    // this.targetZ = 0;
+    // this.targetLookAt = new Vector3()
     // Scene
-    this.scene = new THREE.Scene();
+    this.this.scene = new THREE.Scene();
     this.scene.add(new THREE.AxesHelper(5));
 
     // Camera
@@ -260,12 +263,14 @@ class Game {
     let dy = -(event.clientY / window.innerHeight - 0.5);
     dx = clamp(dx, -0.4, 0.4);
     dy = clamp(dy, -0.4, 0.4);
-    const gravityX = dx * this.gravityStrength;
-    const gravityY = dy * this.gravityStrength;
+    this.targetX = dx;
+    this.targetY = dy;
     this.rotateCamera(dx, dy);
     if (this.modifyShadows && this.inGame) {
       this.lights.rotateLights(dx, dy);
     }
+    const gravityX = dx * this.gravityStrength;
+    const gravityY = dy * this.gravityStrength;
     this.world.gravity.set(gravityX, gravityY, this.world.gravity.z);
   }
 
