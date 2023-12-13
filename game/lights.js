@@ -8,6 +8,7 @@ export class Lights {
     this.light3Pos = new THREE.Vector3(0, 140, 100);
     this.light4Pos = new THREE.Vector3(0, -140, 100);
     this.setupLights();
+    this.centerPos = new THREE.Vector3(0, 0, 100);
   }
 
   setupLights() {
@@ -37,6 +38,14 @@ export class Lights {
     this.scene.add(this.light4);
   }
 
+  getCurrentRatios() {
+    let radius = 125;
+    return new THREE.Vector2(
+      this.centerPos.x / -radius,
+      this.centerPos.y / -radius
+    );
+  }
+
   rotateLights(dx, dy) {
     let radius = 125;
     let displacement = new THREE.Vector3(-radius * dx, -radius * dy, 0);
@@ -44,5 +53,6 @@ export class Lights {
     this.light2.position.copy(this.light2Pos.clone().add(displacement));
     this.light3.position.copy(this.light3Pos.clone().add(displacement));
     this.light4.position.copy(this.light4Pos.clone().add(displacement));
+    this.centerPos.add(displacement);
   }
 }

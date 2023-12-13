@@ -25,10 +25,11 @@ class Game {
     this.sphereRadiusGame = 3.5;
     this.targetX = 0;
     this.targetY = 0;
+    this.darkMode = false;
     // this.targetZ = 0;
     // this.targetLookAt = new Vector3()
     // Scene
-    this.this.scene = new THREE.Scene();
+    this.scene = new THREE.Scene();
     this.scene.add(new THREE.AxesHelper(5));
 
     // Camera
@@ -105,6 +106,7 @@ class Game {
     this.menu.removeObjects();
     for (let i = 0; i < this.sphereList.length; i++) {
       this.scene.remove(this.sphereList[i]);
+      this.scene.remove(this.sphereList[i].mesh);
       this.scene.remove(this.sphereList[i].pointLight);
       this.world.removeBody(this.sphereList[i].body);
     }
@@ -207,7 +209,20 @@ class Game {
       use_tx,
       new THREE.Vector3(-1, 65, 10)
     );
-    this.lights = new Lights(this.scene);
+
+    var darkModeButton = document.getElementById("toggleButton3");
+    var marbleButton = document.getElementById("toggleButton2");
+
+    if (
+      !(
+        (darkModeButton.textContent === "On" ||
+          darkModeButton.innerText === "On") &&
+        (marbleButton.textContent === "Illuminated" ||
+          marbleButton.innerText === "Illuminated")
+      )
+    ) {
+      this.lights = new Lights(this.scene);
+    }
   }
 
   generateSphere() {
@@ -265,13 +280,17 @@ class Game {
     dy = clamp(dy, -0.4, 0.4);
     this.targetX = dx;
     this.targetY = dy;
-    this.rotateCamera(dx, dy);
-    if (this.modifyShadows && this.inGame) {
-      this.lights.rotateLights(dx, dy);
-    }
     const gravityX = dx * this.gravityStrength;
     const gravityY = dy * this.gravityStrength;
     this.world.gravity.set(gravityX, gravityY, this.world.gravity.z);
+  }
+
+  getCameraRatio() {
+    let radius = 40;
+    return new THREE.Vector2(
+      this.camera.position.x / -radius,
+      this.camera.position.y / -radius
+    );
   }
 
   rotateCamera(dx, dy) {
@@ -326,6 +345,25 @@ class Game {
     if (this.inGame) {
       this.board.update();
       this.sphere.update();
+      let ratio = 15.0 * this.clock.getDelta();
+      let camCurrentRatios = this.getCameraRatio();
+      let camDiffX = (this.targetX - camCurrentRatios.x) * ratio;
+      let camDiffY = (this.targetY - camCurrentRatios.y) * ratio;
+      this.rotateCamera(
+        camCurrentRatios.x + camDiffX,
+        camCurrentRatios.y + camDiffY
+      );
+      if (this.lights != null) {
+        let lightCurrentRatios = this.lights.getCurrentRatios();
+        let lightDiffX = (this.targetX - lightCurrentRatios.x) * ratio;
+        let lightDiffY = (this.targetY - lightCurrentRatios.y) * ratio;
+        if (this.modifyShadows && this.inGame) {
+          this.lights.rotateLights(
+            lightCurrentRatios.x + lightDiffX,
+            lightCurrentRatios.y + lightDiffY
+          );
+        }
+      }
     } else {
       this.sphereList.forEach((sphere) => {
         if (sphere.mesh.position.z < 0) {
