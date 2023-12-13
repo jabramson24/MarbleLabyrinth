@@ -6,6 +6,8 @@ import CannonUtils from "CannonUtils";
 
 export class Menu {
   constructor(scene, world, camera) {
+
+    // Scene, World, Camera, and other initialization setup
     this.scene = scene;
     this.world = world;
     this.camera = camera;
@@ -14,20 +16,29 @@ export class Menu {
     this.normalPath = "../game/assets/glass-normal.jpg";
     this.textureLoader = new THREE.TextureLoader();
     this.boardObject = null;
+    this.textObject = null;
     this.boardMesh = null;
     this.boardBody = null;
     this.boardLoaded = false;
-    // camera arrangment
-    this.camera.position.set(0, -200, 300);
+
+    // Camera arrangment
+    this.camera.position.set(0, -220, 330);
     this.camera.rotation.x += Math.PI / 3;
 
-    // menu light
+    // Menu light
     this.light = new THREE.DirectionalLight(0xffffff, 1);
     this.light.position.set(0, 200, 800);
     this.light.castShadow = true;
     this.scene.add(this.light);
 
+    // Text Light
+    this.textLight = new THREE.DirectionalLight(0xffffff, 1);
+    this.textLight.position.set(0, -100, 280);
+    this.textLight.castShadow = true;
+    this.textLight.lookAt(420, 180, 100);
+    this.scene.add(this.textLight);
     this.loadBoard();
+
   }
 
   loadBoard() {
@@ -35,13 +46,13 @@ export class Menu {
     objLoader.load(
       this.board,
       (object) => {
-        object.position.set(0, -100, 230);
         this.scene.add(object);
         this.boardObject = object;
         this.boardMesh = object.children[0];
+        this.boardMesh.position.set(0, -100, 230);
         this.setupBoardTexture();
         this.setupBoardPhysics();
-        this.boardLoaded = true;
+        
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -50,6 +61,37 @@ export class Menu {
         console.log("An error happened");
       }
     );
+
+    objLoader.load(
+      "../game/assets/models/text.obj",
+      (object) => {
+        this.scene.add(object);
+        this.textObject = object;
+        this.boardMesh = object.children;
+        for (let i = 0; i < this.boardMesh.length; i++) {
+          this.boardMesh[i].rotation.x += Math.PI / 3;
+          this.boardMesh[i].position.set(90, 50, 150);
+          this.boardMesh[i].scale.set(3.0, 3.0, 3.0);
+        }
+        
+      },
+      (xhr) => {
+        console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
+      },
+      (error) => {
+        console.log("An error happened");
+      }
+    );
+    this.boardLoaded = true;
+  }
+
+  generateVibrantColor() {
+
+    const hue = Math.random() * 360;
+    const saturation = 80 + Math.random() * 20; 
+    const lightness = 30 + Math.random() * 20;
+    const vibrantColor = new THREE.Color(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    return vibrantColor;
   }
 
   setupBoardTexture() {
@@ -85,18 +127,23 @@ export class Menu {
     this.boardBody = new CANNON.Body({ mass: 0 });
     this.boardBody.addShape(boardShape);
     this.boardBody.position.copy(this.boardMesh.position);
+
     this.world.addBody(this.boardBody);
   }
 
   removeObjects() {
+    if (this.boardBody == null) {
+      return;
+    }
     this.world.removeBody(this.boardBody);
     this.boardBody = null;
     this.scene.remove(this.boardObject);
-   
+    this.scene.remove(this.textObject);
     this.scene.remove(this.light);
+    this.scene.remove(this.textLight);
     this.boardObject = null;  
+    this.textObject = null;
     this.light = null;
-    
   }
 
   update() {

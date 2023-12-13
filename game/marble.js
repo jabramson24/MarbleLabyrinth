@@ -1,28 +1,37 @@
 import * as THREE from "three";
 import * as CANNON from "cannon-es";
 
-const spawnX = -1;
-const spawnY = 65;
-const spawnZ = 10;
-const size = 3.5;
+let spawnX = -1;
+let spawnY = 65;
+let spawnZ = 10;
+let size = 3.5;
 
 export class Sphere {
-  constructor(scene, world, normal, texture, use_tx = false) {
+  constructor(scene, world, normal, texture, use_tx = false, spawnPos) {
     // Texture
     this.use_tx = use_tx;
-    if (!use_tx) {
-      this.pointLight = new THREE.PointLight(texture, 1, 30);
-      this.pointLight.position.set(spawnX, spawnX, spawnX);
+    let sphereGeometry = null;
+    if (!this.use_tx) {
+      spawnX = spawnPos.x;
+      spawnY = spawnPos.y;
+      spawnZ = spawnPos.z;
+      size = 8;
+      this.pointLight = new THREE.PointLight(normal, 20, 30);
+      this.pointLight.position.set(spawnX, spawnY, spawnZ);
       scene.add(this.pointLight);
+      sphereGeometry = new THREE.SphereGeometry(size / 8, 16, 12);
     }
-    // Sphere Geometry
-    const sphereGeometry = new THREE.SphereGeometry();
+    
+    else {
+      // Sphere Geometry
+      sphereGeometry = new THREE.SphereGeometry(size / 3.5, 16, 12);
+    }
     this.mesh = new THREE.Mesh(
       sphereGeometry,
-      this.addTexture(normal, texture, use_tx)
+      this.addTexture(normal, texture)
     );
     this.mesh.position.set(spawnX, spawnY, spawnZ);
-    if (use_tx) {
+    if (this.use_tx) {
       this.mesh.castShadow = true;
       this.mesh.receiveShadow = true;
     }
@@ -46,8 +55,8 @@ export class Sphere {
     this.doOnTick();
   }
 
-  addTexture(normal, texture, use_tx) {
-    if (use_tx) {
+  addTexture(normal, texture) {
+    if (this.use_tx) {
       // Sphere Material
       const textureLoader = new THREE.TextureLoader();
       const metalNormal = textureLoader.load(normal);
@@ -64,7 +73,7 @@ export class Sphere {
       this.sphereMaterial = new THREE.MeshPhongMaterial({
         color: normal,
         emissive: normal,
-        emissiveIntensity: 20
+        emissiveIntensity: 2
       });
       return this.sphereMaterial;
     }

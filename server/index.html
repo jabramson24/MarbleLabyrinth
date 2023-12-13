@@ -6,20 +6,105 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Marble Labyrinth</title>
     <link rel="stylesheet" href="css/main.css">
+    <link href="https://fonts.googleapis.com/css2?family=Press+Start+2P&display=swap" rel="stylesheet">
 </head>
 <body>
+    <div id="bottomRightDiv">
+        <span class="madeBy">Made By:</span><br>
+        Arman, Henry, and Josh<br>
+        <a href="https://github.com/jabramson24/MarbleLabyrinth" target="_blank" class="githubLink">GitHub</a>
+    </div>
+    
+    <div id="middleRightDiv">
+        <button id="startButton">Start ></button>
+    </div>
+
+    <div id="toggleContainer">
+        <div>
+            <span id="graphicsText">Graphics: </span> 
+            <button id="toggleButton1">High</button>
+        </div>
+        <div>
+            <span id="marbleText">Marble: </span> 
+            <button id="toggleButton2">Illuminated</button>
+        </div>
+    </div>
+
+    <div id="pressSpace">Press Space</div>
+
+    <!-- Vertex Shader -->
+    <script id="vertexshader" type="x-shader/x-vertex">
+        varying vec2 vert;
+    
+        void main() {
+            vert = uv;
+            gl_Position = projectionMatrix * modelViewMatrix * vec4(position, 1.0);
+        }
+    </script>
+
+    <!-- Fragment Shader -->
+    <script id="fragmentshader" type="x-shader/x-fragment">
+        uniform sampler2D baseTexture;
+        uniform sampler2D bloomTexture;
+        varying vec2 vert;
+    
+        void main() {
+            gl_FragColor = texture2D(baseTexture, vert);
+            vec4 bloom = texture2D(bloomTexture, vert);
+            gl_FragColor.rgb += bloom.rgb;
+        }
+    </script>
+
+    <!-- Additional Libraries -->
     <script async src="https://unpkg.com/es-module-shims@1.6.0/dist/es-module-shims.js"></script>
     <script type="importmap">
     {
         "imports": {
         "three": "https://cdn.skypack.dev/three@0.146.0/build/three.module",
         "three/": "https://cdn.skypack.dev/three@0.146.0/",
+        "three/addons/": "https://cdn.skypack.dev/three@0.146.0/examples/jsm/",
         "dat.gui": "https://cdn.skypack.dev/dat.gui",
         "cannon-es": "https://cdn.skypack.dev/cannon-es",
         "CannonUtils": "https://cdn.jsdelivr.net/gh/Sean-Bradley/CannonUtils@main/cannonUtils.js",
         "CannonDebugRenderer": "https://cdn.jsdelivr.net/gh/Sean-Bradley/CannonUtils@main/cannonDebugRenderer.js"
         }
     }
+    </script>
+
+    <script>
+        const pressSpace = document.getElementById('pressSpace');
+        let fontSize = 20; 
+        let growing = true;
+        setInterval(() => {
+            if (growing) {
+                fontSize++;
+                if (fontSize >= 40) growing = false;
+            } else {
+                fontSize--;
+                if (fontSize <= 20) growing = true; 
+            }
+            pressSpace.style.fontSize = fontSize + 'px';
+        }, 100); 
+    </script>
+
+    <script>
+        const toggleButton1 = document.getElementById('toggleButton1');
+        const graphicsText = document.getElementById('graphicsText');
+        let graphicsHigh = true;
+
+        toggleButton1.addEventListener('click', () => {
+            graphicsHigh = !graphicsHigh;
+            toggleButton1.textContent = graphicsHigh ? 'High' : 'Low';
+        });
+
+        const toggleButton2 = document.getElementById('toggleButton2');
+        const marbleText = document.getElementById('marbleText');
+        let marbleIlluminated = true;
+
+        toggleButton2.addEventListener('click', () => {
+            marbleIlluminated = !marbleIlluminated;
+            toggleButton2.textContent = marbleIlluminated ? 'Illuminated' : 'Textured';
+        });
     </script>
     <script type="module" src="../game/main.js"></script>
 </body>
