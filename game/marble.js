@@ -7,24 +7,22 @@ let spawnZ = 10;
 let size = 3.5;
 
 export class Sphere {
-  constructor(scene, world, normal, texture, use_tx = false, spawnPos) {
+  constructor(scene, world, normal, texture, radius, use_tx = false, spawnPos) {
     // Texture
     this.use_tx = use_tx;
+    this.size = radius;
     let sphereGeometry = null;
     if (!this.use_tx) {
       spawnX = spawnPos.x;
       spawnY = spawnPos.y;
       spawnZ = spawnPos.z;
-      size = 8;
       this.pointLight = new THREE.PointLight(normal, 20, 30);
       this.pointLight.position.set(spawnX, spawnY, spawnZ);
       scene.add(this.pointLight);
-      sphereGeometry = new THREE.SphereGeometry(size / 8, 16, 12);
-    }
-    
-    else {
+      sphereGeometry = new THREE.SphereGeometry(this.size, 16, 12);
+    } else {
       // Sphere Geometry
-      sphereGeometry = new THREE.SphereGeometry(size / 3.5, 16, 12);
+      sphereGeometry = new THREE.SphereGeometry(this.size, 16, 12);
     }
     this.mesh = new THREE.Mesh(
       sphereGeometry,
@@ -35,11 +33,11 @@ export class Sphere {
       this.mesh.castShadow = true;
       this.mesh.receiveShadow = true;
     }
-    this.mesh.scale.set(size, size, size);
+    this.mesh.scale.set(1, 1, 1);
     scene.add(this.mesh);
 
     // Physics
-    const sphereShape = new CANNON.Sphere(size - 0.5);
+    const sphereShape = new CANNON.Sphere(this.size - 0.3);
     this.body = new CANNON.Body({ mass: 1 });
     this.body.addShape(sphereShape);
     this.body.position.copy(this.mesh.position);
@@ -73,7 +71,7 @@ export class Sphere {
       this.sphereMaterial = new THREE.MeshPhongMaterial({
         color: normal,
         emissive: normal,
-        emissiveIntensity: 2
+        emissiveIntensity: 2,
       });
       return this.sphereMaterial;
     }

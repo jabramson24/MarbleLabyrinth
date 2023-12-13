@@ -10,6 +10,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 import { ShaderPass } from "three/examples/jsm/postprocessing/ShaderPass";
 import { EffectComposer } from "three/examples/jsm/postprocessing/EffectComposer";
 import { UnrealBloomPass } from "three/examples/jsm/postprocessing/UnrealBloomPass";
+// import { transformWithEsbuild } from "vite";
 
 class Game {
   constructor() {
@@ -20,6 +21,8 @@ class Game {
     this.sphereList = [];
     this.board = null;
     this.sphere = null;
+    this.sphereRadiusMenu = 8;
+    this.sphereRadiusGame = 3.5;
 
     // Scene
     this.scene = new THREE.Scene();
@@ -28,8 +31,7 @@ class Game {
     // Camera
     this.aspectRatio = window.innerWidth / window.innerHeight;
     this.camera = new THREE.PerspectiveCamera(75, this.aspectRatio, 0.1, 840);
-    
-    
+
     // Renderer
     this.renderPass = new RenderPass(this.scene, this.camera);
     this.renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -45,7 +47,7 @@ class Game {
 
     // // Composer
     // this.composer = new EffectComposer(this.renderer);
-    
+
     // this.bloomPass = new UnrealBloomPass(
     //   new THREE.Vector2(window.innerWidth, window.innerHeight),
     //   1.6,      // Intensity
@@ -72,7 +74,6 @@ class Game {
     document.body.appendChild(this.stats.dom);
     this.addGlowingObjects();
 
-
     // Final Composer
 
     // this.finalComposer = new EffectComposer(this.renderer);
@@ -92,7 +93,7 @@ class Game {
     // this.finalComposer.addPass(finalPass);
   }
 
-  transition(menu){
+  transition(menu) {
     this.menu = menu;
     this.inGame = true;
     this.camera.position.set(0, 0, 120);
@@ -105,38 +106,43 @@ class Game {
       this.world.removeBody(this.sphereList[i].body);
     }
 
-    
+    var pressSpaceDiv = document.getElementById("pressSpace");
+    var starter = document.getElementById("middleRightDiv");
+    var toggleContainer = document.getElementById("toggleContainer");
+    starter.style.display = "none";
+    pressSpaceDiv.style.display = "none";
+    toggleContainer.style.display = "none";
+    var marbleButton = document.getElementById("toggleButton2");
 
-    var pressSpaceDiv = document.getElementById('pressSpace');
-    var starter = document.getElementById('middleRightDiv');
-    var toggleContainer = document.getElementById('toggleContainer');
-    starter.style.display = 'none';
-    pressSpaceDiv.style.display = 'none';
-    toggleContainer.style.display = 'none';
-    var marbleButton = document.getElementById('toggleButton2');
-
-    if (marbleButton.textContent === 'Illuminated' ||
-        marbleButton.innerText === 'Illuminated') {
-          this.loadObjects(
-            this.generateVibrantColor(),
-            "../game/assets/metal-texture.jpg",
-            false
-          );
+    if (
+      marbleButton.textContent === "Illuminated" ||
+      marbleButton.innerText === "Illuminated"
+    ) {
+      this.loadObjects(
+        this.generateVibrantColor(),
+        "../game/assets/metal-texture.jpg",
+        this.sphereRadiusGame,
+        false
+      );
     } else {
       this.loadObjects(
         "../game/assets/rusted-metal-normal.jpg",
         "../game/assets/metal-texture.jpg",
+        this.sphereRadiusGame,
         true
       );
     }
+
+    this.sphere.resetPosition();
   }
 
   generateVibrantColor() {
-
     const hue = Math.random() * 360;
-    const saturation = 80 + Math.random() * 20; 
+    const saturation = 80 + Math.random() * 20;
     const lightness = 30 + Math.random() * 20;
-    const vibrantColor = new THREE.Color(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    const vibrantColor = new THREE.Color(
+      `hsl(${hue}, ${saturation}%, ${lightness}%)`
+    );
     return vibrantColor;
   }
 
@@ -151,30 +157,36 @@ class Game {
       const geometryZ = new THREE.BoxGeometry(size, size / 2, size * 80);
       const color = this.generateVibrantColor();
       const material = new THREE.MeshPhongMaterial({
-          color: color,
-          emissive: color,
-          emissiveIntensity: 1,
-          shininess: 100
+        color: color,
+        emissive: color,
+        emissiveIntensity: 1,
+        shininess: 100,
       });
       const mesh = new THREE.Mesh(geometryY, material);
       // mesh.layers.enable(this.BLOOM_LAYER);
       const boarder = window.innerWidth - window.innerHeight;
-      mesh.position.set(Math.random() * (boarder * 1.2) - boarder / 1.6,
-                        Math.random() * 1000 , -80);
+      mesh.position.set(
+        Math.random() * (boarder * 1.2) - boarder / 1.6,
+        Math.random() * 1000,
+        -80
+      );
 
       this.scene.add(mesh);
       this.glowingObjectsY.push(mesh);
-      const duplicate =  new THREE.Mesh(geometryZ, material);
+      const duplicate = new THREE.Mesh(geometryZ, material);
       // duplicate.layers.enable(this.BLOOM_LAYER);
-      duplicate.position.set(Math.random() * (boarder * 1.2) - boarder / 1.6,
-                        600, Math.random() * 1000 , -80);
+      duplicate.position.set(
+        Math.random() * (boarder * 1.2) - boarder / 1.6,
+        600,
+        Math.random() * 1000,
+        -80
+      );
       this.scene.add(duplicate);
       this.glowingObjectsZ.push(duplicate);
     }
   }
 
-  loadObjects(sNormal, sTexture, use_tx = false) {
-
+  loadObjects(sNormal, sTexture, sphereRadius, use_tx = false) {
     this.board = new Board(
       this.scene,
       this.world,
@@ -182,27 +194,29 @@ class Game {
       "../game/assets/wood_texture.jpeg",
       "../game/assets/wood-normal.jpg"
     );
-    
+
     this.sphere = new Sphere(
       this.scene,
       this.world,
       sNormal,
       sTexture,
+      sphereRadius,
       use_tx,
-      new THREE.Vector3(-1, 65, 10) 
+      new THREE.Vector3(-1, 65, 10)
     );
     this.lights = new Lights(this.scene);
   }
 
   generateSphere() {
-    const random = Math.floor(Math.random() * (70 - (-70) + 1)) + (-70);
+    const random = Math.floor(Math.random() * (70 - -70 + 1)) + -70;
     const sphere = new Sphere(
       this.scene,
       this.world,
       this.generateVibrantColor(),
       null,
+      this.sphereRadiusMenu,
       false,
-      new THREE.Vector3(random , random - 100, 280)
+      new THREE.Vector3(random, random - 100, 280)
     );
     this.sphereList.push(sphere);
   }
@@ -219,11 +233,14 @@ class Game {
       (event) => this.onMouseMove(event),
       false
     );
-    window.addEventListener('keydown', (event) => {
-      if (event.code === 'Space') {
+    window.addEventListener("keydown", (event) => {
+      if (event.code === "Space") {
         this.generateSphere();
       }
-    });  
+      if (event.key === "r") {
+        this.resetSphere();
+      }
+    });
   }
 
   onWindowResize() {
@@ -233,8 +250,7 @@ class Game {
   }
 
   onMouseMove(event) {
-    
-    if (this.inGame){
+    if (this.inGame) {
       if (!event.buttons) return;
     } else {
       this.mousePosition.x = event.clientX;
@@ -256,27 +272,41 @@ class Game {
   rotateCamera(dx, dy) {
     let radius = 40;
     this.camera.position.set(
-      -radius * dx ,
-      -radius * dy ,
+      -radius * dx,
+      -radius * dy,
       this.camera.position.z
     );
-    if(!this.inGame){
+    if (!this.inGame) {
       this.camera.position.y -= 200;
       this.camera.lookAt(radius * dx * 5, 200, radius * dy * 5);
     } else {
       this.camera.lookAt(0, 0, 0);
     }
   }
+
+  resetSphere() {
+    if (this.inGame) {
+      this.sphere.resetPosition();
+    } else {
+      for (let i = 0; i < this.sphereList.length; i++) {
+        this.scene.remove(this.sphereList[i]);
+        this.scene.remove(this.sphereList[i].mesh);
+        this.scene.remove(this.sphereList[i].pointLight);
+        this.world.removeBody(this.sphereList[i].body);
+      }
+    }
+  }
+
   updateGlowingObjects() {
-    const speed = 0.8; 
-    this.glowingObjectsY.forEach(obj => {
+    const speed = 0.8;
+    this.glowingObjectsY.forEach((obj) => {
       obj.position.y -= speed;
       if (obj.position.y < -250) {
         obj.position.y = 900;
       }
     });
-    if(!this.inGame){
-      this.glowingObjectsZ.forEach(obj => {
+    if (!this.inGame) {
+      this.glowingObjectsZ.forEach((obj) => {
         obj.position.z += speed;
         if (obj.position.z > 900) {
           obj.position.z = -250;
@@ -288,12 +318,12 @@ class Game {
   animate() {
     requestAnimationFrame(() => this.animate());
     this.world.step(Math.min(this.clock.getDelta(), 0.1));
-    if(this.inGame){
+    if (this.inGame) {
       this.board.update();
       this.sphere.update();
     } else {
-      this.sphereList.forEach(sphere => {
-        if(sphere.mesh.position.z < 0){
+      this.sphereList.forEach((sphere) => {
+        if (sphere.mesh.position.z < 0) {
           this.scene.remove(sphere.mesh);
           this.scene.remove(sphere.pointLight);
           this.world.removeBody(sphere.body);
@@ -302,7 +332,7 @@ class Game {
         sphere.update();
       });
     }
-    if(this.removeMenu){
+    if (this.removeMenu) {
       this.menu.removeObjects();
       this.removeMenu = false;
     }
@@ -318,11 +348,12 @@ class Game {
   }
 }
 
-
 const game = new Game();
 const menu = new Menu(game.scene, game.world, game.camera, game.inGame);
 game.menu = menu;
-document.getElementById('startButton').addEventListener('click', () => game.transition(menu));
+document
+  .getElementById("startButton")
+  .addEventListener("click", () => game.transition(menu));
 
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
