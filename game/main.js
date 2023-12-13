@@ -318,6 +318,7 @@ class Game {
         this.scene.remove(this.sphereList[i].pointLight);
         this.world.removeBody(this.sphereList[i].body);
       }
+      this.sphereList = [];
     }
   }
 
