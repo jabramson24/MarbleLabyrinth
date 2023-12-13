@@ -226,17 +226,19 @@ class Game {
   }
 
   generateSphere() {
-    const random = Math.floor(Math.random() * (70 - -70 + 1)) + -70;
-    const sphere = new Sphere(
-      this.scene,
-      this.world,
-      this.generateVibrantColor(),
-      null,
-      this.sphereRadiusMenu,
-      false,
-      new THREE.Vector3(random, random - 100, 280)
-    );
-    this.sphereList.push(sphere);
+    if (this.sphereList.length < 11) {
+      const random = Math.floor(Math.random() * (70 - -70 + 1)) + -70;
+      const sphere = new Sphere(
+        this.scene,
+        this.world,
+        this.generateVibrantColor(),
+        null,
+        this.sphereRadiusMenu,
+        false,
+        new THREE.Vector3(random, random - 100, 280)
+      );
+      this.sphereList.push(sphere);
+    }
   }
 
   addEventListeners() {
@@ -301,7 +303,7 @@ class Game {
       this.camera.position.z
     );
     if (!this.inGame) {
-      this.camera.position.y -= 200;
+      this.camera.position.y -= 225;
       this.camera.lookAt(radius * dx * 5, 200, radius * dy * 5);
     } else {
       this.camera.lookAt(0, 0, 0);
@@ -355,13 +357,10 @@ class Game {
         camCurrentRatios.y + camDiffY
       );
       if (this.lights != null) {
-        let lightCurrentRatios = this.lights.getCurrentRatios();
-        let lightDiffX = (this.targetX - lightCurrentRatios.x) * ratio;
-        let lightDiffY = (this.targetY - lightCurrentRatios.y) * ratio;
         if (this.modifyShadows && this.inGame) {
           this.lights.rotateLights(
-            lightCurrentRatios.x + lightDiffX,
-            lightCurrentRatios.y + lightDiffY
+            camCurrentRatios.x + camDiffX,
+            camCurrentRatios.y + camDiffY
           );
         }
       }
@@ -375,6 +374,7 @@ class Game {
         }
         sphere.update();
       });
+      this.rotateCamera(this.targetX, this.targetY);
     }
     if (this.removeMenu) {
       this.menu.removeObjects();

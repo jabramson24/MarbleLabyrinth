@@ -16,7 +16,7 @@ export class Sphere {
       spawnX = spawnPos.x;
       spawnY = spawnPos.y;
       spawnZ = spawnPos.z;
-      this.pointLight = new THREE.PointLight(normal, 20, 30);
+      this.pointLight = new THREE.PointLight(normal, 20, 60);
       this.pointLight.castShadow = true;
       this.pointLight.position.set(spawnX, spawnY, spawnZ);
       scene.add(this.pointLight);

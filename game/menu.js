@@ -3,10 +3,8 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import * as CANNON from "cannon-es";
 import CannonUtils from "CannonUtils";
 
-
 export class Menu {
   constructor(scene, world, camera) {
-
     // Scene, World, Camera, and other initialization setup
     this.scene = scene;
     this.world = world;
@@ -26,8 +24,8 @@ export class Menu {
     this.camera.rotation.x += Math.PI / 3;
 
     // Menu light
-    this.light = new THREE.DirectionalLight(0xffffff, 1);
-    this.light.position.set(0, 200, 800);
+    this.light = new THREE.PointLight(0xffffff, 1, 200);
+    this.light.position.set(0, -100, 250);
     this.light.castShadow = true;
     this.scene.add(this.light);
 
@@ -38,7 +36,6 @@ export class Menu {
     this.textLight.lookAt(420, 180, 100);
     this.scene.add(this.textLight);
     this.loadBoard();
-
   }
 
   loadBoard() {
@@ -52,7 +49,6 @@ export class Menu {
         this.boardMesh.position.set(0, -100, 230);
         this.setupBoardTexture();
         this.setupBoardPhysics();
-        
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -73,7 +69,6 @@ export class Menu {
           this.boardMesh[i].position.set(90, 50, 150);
           this.boardMesh[i].scale.set(3.0, 3.0, 3.0);
         }
-        
       },
       (xhr) => {
         console.log((xhr.loaded / xhr.total) * 100 + "% loaded");
@@ -86,11 +81,12 @@ export class Menu {
   }
 
   generateVibrantColor() {
-
     const hue = Math.random() * 360;
-    const saturation = 80 + Math.random() * 20; 
+    const saturation = 80 + Math.random() * 20;
     const lightness = 30 + Math.random() * 20;
-    const vibrantColor = new THREE.Color(`hsl(${hue}, ${saturation}%, ${lightness}%)`);
+    const vibrantColor = new THREE.Color(
+      `hsl(${hue}, ${saturation}%, ${lightness}%)`
+    );
     return vibrantColor;
   }
 
@@ -109,13 +105,13 @@ export class Menu {
     this.woodMaterial = new THREE.MeshPhysicalMaterial({
       map: woodTexture,
       normalMap: woodNormal,
-      normalScale: new THREE.Vector2(0.9, 0.9),
+      normalScale: new THREE.Vector2(0.2, 0.2),
       roughness: 0.4,
       metalness: 0.4,
-      transmission: 0.99,
+      transmission: 0.9,
       emissive: 0x0,
-      color: 0xA8ccD7,
-      ior: 1.0
+      color: 0xa8ccd7,
+      ior: 1.0,
     });
     this.boardMesh.material = this.woodMaterial;
     this.boardMesh.castShadow = true;
@@ -141,7 +137,7 @@ export class Menu {
     this.scene.remove(this.textObject);
     this.scene.remove(this.light);
     this.scene.remove(this.textLight);
-    this.boardObject = null;  
+    this.boardObject = null;
     this.textObject = null;
     this.light = null;
   }
