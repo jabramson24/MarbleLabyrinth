@@ -105,6 +105,7 @@ class Game {
       this.world.removeBody(this.sphereList[i].body);
     }
 
+    
 
     var pressSpaceDiv = document.getElementById('pressSpace');
     var starter = document.getElementById('middleRightDiv');
@@ -112,12 +113,22 @@ class Game {
     starter.style.display = 'none';
     pressSpaceDiv.style.display = 'none';
     toggleContainer.style.display = 'none';
+    var marbleButton = document.getElementById('toggleButton2');
 
-    this.loadObjects(
-      "../game/assets/rusted-metal-normal.jpg",
-      "../game/assets/metal-texture.jpg",
-      true
-    );
+    if (marbleButton.textContent === 'Illuminated' ||
+        marbleButton.innerText === 'Illuminated') {
+          this.loadObjects(
+            this.generateVibrantColor(),
+            "../game/assets/metal-texture.jpg",
+            false
+          );
+    } else {
+      this.loadObjects(
+        "../game/assets/rusted-metal-normal.jpg",
+        "../game/assets/metal-texture.jpg",
+        true
+      );
+    }
   }
 
   generateVibrantColor() {
@@ -311,7 +322,7 @@ class Game {
 const game = new Game();
 const menu = new Menu(game.scene, game.world, game.camera, game.inGame);
 game.menu = menu;
-// document.getElementById('startButton').addEventListener('click', game.transition(menu));
+document.getElementById('startButton').addEventListener('click', () => game.transition(menu));
 
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
