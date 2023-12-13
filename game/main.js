@@ -255,6 +255,23 @@ class Game {
     );
   }
 
+  generateCoins(){
+    for (let i = 0; i < 2; i++) {
+      const coin = new THREE.OctahedronGeometry(10, 0);
+      const color = this.generateVibrantColor();
+      const material = new THREE.MeshPhongMaterial({
+        color: color,
+        emissive: color,
+        emissiveIntensity: 1,
+        shininess: 100,
+      });
+      const mesh = new THREE.Mesh(coin, material);
+      mesh.position.set(-1, -100, 280);
+
+      this.scene.add(mesh);
+    }
+  }
+
   rotateCamera(dx, dy) {
     let radius = 40;
     this.camera.position.set(
