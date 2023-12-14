@@ -1,10 +1,10 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import * as CANNON from "cannon-es";
-import { Sphere } from "../game/marble.js";
-import { Board } from "../game/board.js";
-import { Lights } from "../game/lights.js";
-import { Menu } from "../game/menu.js";
+import { Sphere } from "/game/marble.js";
+import { Board } from "/game/board.js";
+import { Lights } from "/game/lights.js";
+import { Menu } from "/game/menu.js";
 import { clamp } from "three/src/math/MathUtils";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
@@ -174,7 +174,7 @@ class Game {
     this.board = new Board(
       this.scene,
       this.world,
-      'game/assets/models/marbleLabyrinth.obj',
+      'game/assets/models/MarbleLabyrinth.obj',
       'game/assets/wood_texture.jpeg',
       'game/assets/wood-normal.jpg'
     );
