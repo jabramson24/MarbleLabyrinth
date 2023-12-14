@@ -63,7 +63,7 @@ class Game {
     this.isPlaying = false;
 
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load("../game/assets/sound/song.mp3", function (buffer) {
+    audioLoader.load('game/assets/sound/song.mp3', function (buffer) {
       sound.setBuffer(buffer);
       sound.setLoop(true);
       sound.setVolume(0.5);
@@ -86,14 +86,14 @@ class Game {
     ) {
       this.loadObjects(
         this.generateVibrantColor(),
-        "../game/assets/metal-texture.jpg",
+        'game/assets/metal-texture.jpg',
         this.sphereRadiusGame,
         false
       );
     } else {
       this.loadObjects(
-        "../game/assets/rusted-metal-normal.jpg",
-        "../game/assets/metal-texture.jpg",
+        'game/assets/rusted-metal-normal.jpg',
+        'game/assets/metal-texture.jpg',
         this.sphereRadiusGame,
         true
       );
@@ -174,9 +174,9 @@ class Game {
     this.board = new Board(
       this.scene,
       this.world,
-      "../game/assets/models/marbleLabyrinth.obj",
-      "../game/assets/wood_texture.jpeg",
-      "../game/assets/wood-normal.jpg"
+      'game/assets/models/marbleLabyrinth.obj',
+      'game/assets/wood_texture.jpeg',
+      'game/assets/wood-normal.jpg'
     );
 
     this.sphere = new Sphere(

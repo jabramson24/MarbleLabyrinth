@@ -9,9 +9,9 @@ export class Menu {
     this.scene = scene;
     this.world = world;
     this.camera = camera;
-    this.board = "../game/assets/models/box.obj";
-    this.texturePath = "../game/assets/glass.png";
-    this.normalPath = "../game/assets/glass-normal2.jpg";
+    this.board = 'game/assets/models/box.obj';
+    this.texturePath = 'game/assets/glass.png';
+    this.normalPath ='game/assets/glass-normal2.jpg';
     this.textureLoader = new THREE.TextureLoader();
     this.boardObject = null;
     this.textObject = null;
@@ -59,7 +59,7 @@ export class Menu {
     );
 
     objLoader.load(
-      "../game/assets/models/text.obj",
+      'game/assets/models/text.obj',
       (object) => {
         this.scene.add(object);
         this.textObject = object;
