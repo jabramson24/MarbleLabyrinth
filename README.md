@@ -3,6 +3,9 @@
 ## Created By:
 
 Arman Mohammadi, Henry Earnest, Josh Abramson
+## Libraries:
+
+ThreeJS, CANNON
 
 ## Background Music:
 

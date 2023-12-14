@@ -117,7 +117,6 @@ class Game {
       }
 
       this.sphere.resetPosition();
-      // this.sound.stop();
       this.shouldAnimate = true;
     }, 400);
   }
@@ -149,7 +148,6 @@ class Game {
         shininess: 100,
       });
       const mesh = new THREE.Mesh(geometryY, material);
-      // mesh.layers.enable(this.BLOOM_LAYER);
       const boarder = window.innerWidth - window.innerHeight;
       mesh.position.set(
         Math.random() * (boarder * 1.2) - boarder / 1.6,
@@ -160,7 +158,7 @@ class Game {
       this.scene.add(mesh);
       this.glowingObjectsY.push(mesh);
       const duplicate = new THREE.Mesh(geometryZ, material);
-      // duplicate.layers.enable(this.BLOOM_LAYER);
+
       duplicate.position.set(
         Math.random() * (boarder * 1.2) - boarder / 1.6,
         600,
@@ -208,7 +206,7 @@ class Game {
 
   generateSphere() {
     if (this.sphereList.length < 11) {
-      const random = Math.floor(Math.random() * (70 - -70 + 1)) + -70;
+      const random = Math.floor(Math.random() * 141) - 70;
       const sphere = new Sphere(
         this.scene,
         this.world,
@@ -389,7 +387,7 @@ class Game {
           camCurrentRatios.x + camDiffX,
           camCurrentRatios.y + camDiffY
         );
-        // this.rotateCamera(this.targetX, this.targetY);
+
       }
       if (this.removeMenu) {
         this.menu.removeObjects();
@@ -397,7 +395,6 @@ class Game {
       }
       this.updateGlowingObjects();
       this.renderer.render(this.scene, this.camera);
-      // this.composer.render();
       this.stats.update();
     }
   }

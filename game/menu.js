@@ -29,12 +29,6 @@ export class Menu {
     this.light.castShadow = true;
     this.scene.add(this.light);
 
-    // Menu light
-    // this.light = new THREE.DirectionalLight(0xffffff, 1);
-    // this.light.position.set(0, -100, 250);
-    // this.light.castShadow = false;
-    // this.scene.add(this.light);
-
     // Text Light
     this.textLight = new THREE.DirectionalLight(0xffffff, 1);
     this.textLight.position.set(0, -100, 280);

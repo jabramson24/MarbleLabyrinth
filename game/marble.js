@@ -11,6 +11,9 @@ export class Sphere {
     this.use_tx = use_tx;
     this.size = radius;
     let sphereGeometry = null;
+    spawnX = spawnPos.x;
+    spawnY = spawnPos.y;
+    spawnZ = spawnPos.z;
 
     if (!this.use_tx) {
       this.pointLight = new THREE.PointLight(normal, 20, 60);
@@ -31,9 +34,7 @@ export class Sphere {
       this.mesh.castShadow = true;
       this.mesh.receiveShadow = true;
     }
-    spawnX = spawnPos.x;
-    spawnY = spawnPos.y;
-    spawnZ = spawnPos.z;
+    
     this.mesh.scale.set(1, 1, 1);
     scene.add(this.mesh);
 
