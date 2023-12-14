@@ -3,7 +3,7 @@ import * as CANNON from "cannon-es";
 
 let spawnX = -1;
 let spawnY = 65;
-let spawnZ = 2;
+let spawnZ = -10;
 
 export class Sphere {
   constructor(scene, world, normal, texture, radius, use_tx = false, spawnPos) {
@@ -11,10 +11,8 @@ export class Sphere {
     this.use_tx = use_tx;
     this.size = radius;
     let sphereGeometry = null;
+
     if (!this.use_tx) {
-      spawnX = spawnPos.x;
-      spawnY = spawnPos.y;
-      spawnZ = spawnPos.z;
       this.pointLight = new THREE.PointLight(normal, 20, 60);
       this.pointLight.castShadow = true;
       this.pointLight.position.set(spawnX, spawnY, spawnZ);
@@ -33,6 +31,9 @@ export class Sphere {
       this.mesh.castShadow = true;
       this.mesh.receiveShadow = true;
     }
+    spawnX = spawnPos.x;
+    spawnY = spawnPos.y;
+    spawnZ = spawnPos.z;
     this.mesh.scale.set(1, 1, 1);
     scene.add(this.mesh);
 

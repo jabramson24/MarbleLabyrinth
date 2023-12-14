@@ -10,7 +10,7 @@ import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
 class Game {
   constructor() {
-    this.gravityStrength = 200.0;
+    this.gravityStrength = 300.0;
     this.numSteps = 10;
     this.modifyShadows = true;
     this.mousePosition = new THREE.Vector2();
@@ -20,7 +20,7 @@ class Game {
     this.sphereRadiusMenu = 8;
     this.sphereRadiusGame = 3.5;
     this.darkMode = false;
-
+    this.shouldAnimate = true;
     // Scene
     this.scene = new THREE.Scene();
     this.scene.add(new THREE.AxesHelper(5));
@@ -72,19 +72,6 @@ class Game {
   }
 
   transition(menu) {
-    this.menu = menu;
-    this.inGame = true;
-    this.camera.position.set(0, 0, 120);
-    this.camera.lookAt(0, 0, 0);
-    this.removeMenu = true;
-    this.menu.removeObjects();
-    for (let i = 0; i < this.sphereList.length; i++) {
-      this.scene.remove(this.sphereList[i]);
-      this.scene.remove(this.sphereList[i].mesh);
-      this.scene.remove(this.sphereList[i].pointLight);
-      this.world.removeBody(this.sphereList[i].body);
-    }
-
     var pressSpaceDiv = document.getElementById("pressSpace");
     var starter = document.getElementById("middleRightDiv");
     var toggleContainer = document.getElementById("toggleContainer");
@@ -92,7 +79,6 @@ class Game {
     pressSpaceDiv.style.display = "none";
     toggleContainer.style.display = "none";
     var marbleButton = document.getElementById("toggleButton2");
-
     if (
       marbleButton.textContent === "Illuminated" ||
       marbleButton.innerText === "Illuminated"
@@ -111,9 +97,28 @@ class Game {
         true
       );
     }
+    this.targetX = 0;
+    this.targetY = 0;
+    this.shouldAnimate = false;
+    setTimeout(() => {
+      this.menu = menu;
+      this.inGame = true;
+      this.camera.position.set(0, -500, 120);
+      this.camera.lookAt(0, 0, 0);
 
-    this.sphere.resetPosition();
-    this.sound.stop();
+      this.removeMenu = true;
+      this.menu.removeObjects();
+      for (let i = 0; i < this.sphereList.length; i++) {
+        this.scene.remove(this.sphereList[i]);
+        this.scene.remove(this.sphereList[i].mesh);
+        this.scene.remove(this.sphereList[i].pointLight);
+        this.world.removeBody(this.sphereList[i].body);
+      }
+
+      this.sphere.resetPosition();
+      // this.sound.stop();
+      this.shouldAnimate = true;
+    }, 400);
   }
 
   generateVibrantColor() {
@@ -263,11 +268,19 @@ class Game {
   }
 
   getCameraRatio() {
-    let radius = 40;
-    return new THREE.Vector2(
-      this.camera.position.x / -radius,
-      this.camera.position.y / -radius
-    );
+    if (this.inGame) {
+      let radius = 40;
+      return new THREE.Vector2(
+        this.camera.position.x / -radius,
+        this.camera.position.y / -radius
+      );
+    } else {
+      let radius = 40;
+      return new THREE.Vector2(
+        this.camera.position.x / -radius,
+        (this.camera.position.y + 225) / -radius
+      );
+    }
   }
 
   generateCoins() {
@@ -336,46 +349,56 @@ class Game {
 
   animate() {
     requestAnimationFrame(() => this.animate());
-    this.world.step(Math.min(this.clock.getDelta(), 0.1));
-    if (this.inGame) {
-      this.board.update();
-      this.sphere.update();
-      let ratio = 15.0 * this.clock.getDelta();
-      let camCurrentRatios = this.getCameraRatio();
-      let camDiffX = (this.targetX - camCurrentRatios.x) * ratio;
-      let camDiffY = (this.targetY - camCurrentRatios.y) * ratio;
-      this.rotateCamera(
-        camCurrentRatios.x + camDiffX,
-        camCurrentRatios.y + camDiffY
-      );
-      if (this.lights != null) {
-        if (this.modifyShadows && this.inGame) {
-          this.lights.rotateLights(
-            camCurrentRatios.x + camDiffX,
-            camCurrentRatios.y + camDiffY
-          );
+    if (this.shouldAnimate) {
+      this.world.step(Math.min(this.clock.getDelta(), 0.1));
+      if (this.inGame) {
+        this.board.update();
+        this.sphere.update();
+        let ratio = 15.0 * this.clock.getDelta();
+        let camCurrentRatios = this.getCameraRatio();
+        let camDiffX = (this.targetX - camCurrentRatios.x) * ratio;
+        let camDiffY = (this.targetY - camCurrentRatios.y) * ratio;
+        this.rotateCamera(
+          camCurrentRatios.x + camDiffX,
+          camCurrentRatios.y + camDiffY
+        );
+        if (this.lights != null) {
+          if (this.modifyShadows && this.inGame) {
+            this.lights.rotateLights(
+              camCurrentRatios.x + camDiffX,
+              camCurrentRatios.y + camDiffY
+            );
+          }
         }
+      } else {
+        this.sphereList.forEach((sphere) => {
+          if (sphere.mesh.position.z < 0) {
+            this.scene.remove(sphere.mesh);
+            this.scene.remove(sphere.pointLight);
+            this.world.removeBody(sphere.body);
+            this.sphereList.splice(this.sphereList.indexOf(sphere), 1);
+          }
+          sphere.update();
+        });
+        let ratio = 100 * this.clock.getDelta();
+        let camCurrentRatios = this.getCameraRatio();
+        let camDiffX = (this.targetX - camCurrentRatios.x) * ratio;
+        let camDiffY = (this.targetY - camCurrentRatios.y) * ratio;
+        this.rotateCamera(
+          camCurrentRatios.x + camDiffX,
+          camCurrentRatios.y + camDiffY
+        );
+        // this.rotateCamera(this.targetX, this.targetY);
       }
-    } else {
-      this.sphereList.forEach((sphere) => {
-        if (sphere.mesh.position.z < 0) {
-          this.scene.remove(sphere.mesh);
-          this.scene.remove(sphere.pointLight);
-          this.world.removeBody(sphere.body);
-          this.sphereList.splice(this.sphereList.indexOf(sphere), 1);
-        }
-        sphere.update();
-      });
-      this.rotateCamera(this.targetX, this.targetY);
+      if (this.removeMenu) {
+        this.menu.removeObjects();
+        this.removeMenu = false;
+      }
+      this.updateGlowingObjects();
+      this.renderer.render(this.scene, this.camera);
+      // this.composer.render();
+      this.stats.update();
     }
-    if (this.removeMenu) {
-      this.menu.removeObjects();
-      this.removeMenu = false;
-    }
-    this.updateGlowingObjects();
-    this.renderer.render(this.scene, this.camera);
-    // this.composer.render();
-    this.stats.update();
   }
 
   start() {
@@ -394,5 +417,5 @@ document
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
     game.start();
-  }, 100);
+  }, 400);
 });

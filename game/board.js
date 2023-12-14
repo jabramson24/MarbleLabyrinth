@@ -3,7 +3,6 @@ import { OBJLoader } from "three/examples/jsm/loaders/OBJLoader";
 import * as CANNON from "cannon-es";
 import CannonUtils from "CannonUtils";
 
-
 export class Board {
   constructor(scene, world, board, texturePath, normalPath) {
     this.scene = scene;

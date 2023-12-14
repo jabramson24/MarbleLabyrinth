@@ -54,6 +54,5 @@ export class Lights {
     this.light3.position.copy(this.light3Pos.clone().add(displacement));
     this.light4.position.copy(this.light4Pos.clone().add(displacement));
     this.centerPos.copy(new THREE.Vector3(0, 0, 100).add(displacement));
-    console.log(this.centerPos);
   }
 }
