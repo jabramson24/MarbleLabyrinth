@@ -58,7 +58,7 @@ class Game {
 
     // Sounds
     const listener = new THREE.AudioListener();
-    camera.add(listener);
+    this.camera.add(listener);
     this.sound = new THREE.Audio(listener);
     this.isPlaying = false;
 
