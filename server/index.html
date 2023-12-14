@@ -29,8 +29,8 @@
 
     <div id="toggleContainer">
       <div>
-        <span id="graphicsText">Graphics: </span>
-        <button id="toggleButton1">High</button>
+        <span id="graphicsText">Music: </span>
+        <button id="toggleButton1">Off</button>
       </div>
       <div>
         <span id="marbleText">Marble: </span>
@@ -109,7 +109,7 @@
 
       toggleButton1.addEventListener("click", () => {
         graphicsHigh = !graphicsHigh;
-        toggleButton1.textContent = graphicsHigh ? "High" : "Low";
+        toggleButton1.textContent = graphicsHigh ? "Off" : "On";
       });
 
       const toggleButton2 = document.getElementById("toggleButton2");

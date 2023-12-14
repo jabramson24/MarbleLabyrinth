@@ -59,16 +59,17 @@ class Game {
     // Sounds
     const listener = new THREE.AudioListener();
     this.camera.add(listener);
-    this.sound = new THREE.Audio(listener);
+    const sound = new THREE.Audio(listener);
     this.isPlaying = false;
 
     const audioLoader = new THREE.AudioLoader();
-    audioLoader.load("sounds/ambient.ogg", function (buffer) {
-      this.sound.setBuffer(buffer);
-      this.sound.setLoop(true);
-      this.sound.setVolume(0.5);
-      this.sound.play();
+    audioLoader.load("../game/assets/sound/song.mp3", function (buffer) {
+      sound.setBuffer(buffer);
+      sound.setLoop(true);
+      sound.setVolume(0.5);
+      sound.play();
     });
+    this.audioContext = listener.context;
   }
 
   transition(menu) {
@@ -413,6 +414,15 @@ game.menu = menu;
 document
   .getElementById("startButton")
   .addEventListener("click", () => game.transition(menu));
+
+document.getElementById("toggleButton1").addEventListener("click", () => {
+  if (game.isPlaying) {
+    game.audioContext.suspend();
+  } else {
+    game.audioContext.resume();
+  }
+  game.isPlaying = !game.isPlaying;
+});
 
 document.addEventListener("DOMContentLoaded", () => {
   setTimeout(() => {
