@@ -5,6 +5,7 @@ import { Sphere } from "/game/marble.js";
 import { Board } from "/game/board.js";
 import { Lights } from "/game/lights.js";
 import { Menu } from "/game/menu.js";
+import { Coin } from "/game/coins.js";
 import { clamp } from "three/src/math/MathUtils";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
@@ -282,23 +283,6 @@ class Game {
     }
   }
 
-  generateCoins() {
-    for (let i = 0; i < 2; i++) {
-      const coin = new THREE.OctahedronGeometry(10, 0);
-      const color = this.generateVibrantColor();
-      const material = new THREE.MeshPhongMaterial({
-        color: color,
-        emissive: color,
-        emissiveIntensity: 1,
-        shininess: 100,
-      });
-      const mesh = new THREE.Mesh(coin, material);
-      mesh.position.set(-1, -100, 280);
-
-      this.scene.add(mesh);
-    }
-  }
-
   rotateCamera(dx, dy) {
     let radius = 40;
     this.camera.position.set(
@@ -407,6 +391,7 @@ class Game {
 
 const game = new Game();
 const menu = new Menu(game.scene, game.world, game.camera, game.inGame);
+const coin = new Coin(game.scene, game.world, 5);
 game.menu = menu;
 document
   .getElementById("startButton")
