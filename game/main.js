@@ -1,11 +1,11 @@
 import * as THREE from "three";
 import Stats from "three/examples/jsm/libs/stats.module";
 import * as CANNON from "cannon-es";
-import { Sphere } from "@/game/marble.js";
-import { Board } from "@/game/board.js";
-import { Lights } from "@/game/lights.js";
-import { Menu } from "@/game/menu.js";
-import { Coin } from "@/game/coins.js";
+import { Sphere } from "./marble.js";
+import { Board } from "./board.js";
+import { Lights } from "./lights.js";
+import { Menu } from "./menu.js";
+import { Coin } from "./coins.js";
 import { clamp } from "three/src/math/MathUtils";
 import { RenderPass } from "three/examples/jsm/postprocessing/RenderPass";
 
